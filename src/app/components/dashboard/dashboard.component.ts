@@ -42,9 +42,9 @@ const PET_DATA: Pet[] = [];
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css',
 })
-export class DashboardComponent{
-  constructor(private authService: AuthService) {}
- 
+export class DashboardComponent  implements OnInit{
+  dataSource: Pet[] = [];
+
   readonly dialog = inject(MatDialog);
 
   displayedColumns: string[] = [
@@ -58,30 +58,43 @@ export class DashboardComponent{
     'adoptiondate',
   ];
 
-  dataSource: Pet[] = [...PET_DATA]
   @ViewChild(MatTable) table: MatTable<Pet>;
 
- 
+  constructor(private authService: AuthService) {
+    this.dataSource = this.getPets();
+    console.log(this.dataSource);
+  }
+  ngOnInit(): void {
+    this.table.renderRows();
+  }
   addPet() {
     const dialogRef = this.dialog.open(AddPetDialog);
     dialogRef.afterClosed().subscribe(async (result: Pet) => {
       // Add a new document in collection "cities"
-      this.authService.afs.collection('pets').doc(this.authService.userData.uid).collection('pets').add(result);
+      this.authService.afs
+        .collection('pets')
+        .doc(this.authService.userData.uid)
+        .collection('pets')
+        .add(result);
       this.dataSource.push(result);
       this.table.renderRows();
     });
   }
 
- getPets() {
+  getPets() {
     const markers: any[] = [];
-    this.authService.afs.collection('pets').doc(this.authService.userData.uid).collection('pets').get()
-      .subscribe((querySnapshot: { docs: any[]; }) => {
-        querySnapshot.docs.forEach((doc: { data: () => any; }) => {
+    this.authService?.afs
+      .collection('pets')
+      .doc(this.authService.userData.uid)
+      .collection('pets')
+      .get()
+      .subscribe((querySnapshot: { docs: any[] }) => {
+        querySnapshot.docs.forEach((doc: { data: () => any }) => {
           this.dataSource.push(doc.data());
         });
       });
     return markers;
-   }
+  }
 }
 
 @Component({
