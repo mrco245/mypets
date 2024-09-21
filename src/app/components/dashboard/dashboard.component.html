@@ -1,1 +1,49 @@
 <app-naviagation></app-naviagation>
+<h1>Welcome to My Pets!</h1>
+<div>
+    <button mat-raised-button (click)="addPet()">
+        Add pet data
+    </button>
+</div>
+
+<table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+
+    <ng-container matColumnDef="species">
+        <th mat-header-cell *matHeaderCellDef>Species</th>
+        <td mat-cell *matCellDef="let pet">{{pet.species}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef>Name</th>
+        <td mat-cell *matCellDef="let pet">{{pet.name}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="breed">
+        <th mat-header-cell *matHeaderCellDef>Breed</th>
+        <td mat-cell *matCellDef="let pet">{{pet.breed}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="age">
+        <th mat-header-cell *matHeaderCellDef>Age</th>
+        <td mat-cell *matCellDef="let pet">{{pet.age}}</td>
+    </ng-container>
+    <ng-container matColumnDef="weight">
+        <th mat-header-cell *matHeaderCellDef>Weight</th>
+        <td mat-cell *matCellDef="let pet">{{pet.weight}}</td>
+    </ng-container>
+    <ng-container matColumnDef="altered">
+        <th mat-header-cell *matHeaderCellDef>Spayed/Neutered?</th>
+        <td mat-cell *matCellDef="let pet">{{pet.altered}}</td>
+    </ng-container>
+    <ng-container matColumnDef="birthdate">
+        <th mat-header-cell *matHeaderCellDef>Birthday</th>
+        <td mat-cell *matCellDef="let pet">{{pet.birthdate}}</td>
+    </ng-container>
+    <ng-container matColumnDef="adoptiondate">
+        <th mat-header-cell *matHeaderCellDef>Adoption Date</th>
+        <td mat-cell *matCellDef="let pet">{{pet.adoptiondate}}</td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+</table>

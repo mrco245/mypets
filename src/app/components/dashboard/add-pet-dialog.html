@@ -1,0 +1,25 @@
+<h2 mat-dialog-title>Add a pet</h2>
+<mat-dialog-content class="mat-typography">
+    <form [formGroup]="petForm">
+        <mat-form-field>
+            <mat-label>Pets Name</mat-label>
+            <input matInput placeholder="name" formControlName="name" />
+        </mat-form-field>
+        <mat-form-field>
+            <mat-label>Species</mat-label>
+            <input matInput placeholder="dog"formControlName="species" required />
+        </mat-form-field>
+        <mat-form-field>
+            <mat-label>Breed</mat-label>
+            <input matInput placeholder="lab "formControlName="breed" required />
+        </mat-form-field>
+        <mat-form-field>
+            <mat-label>Age</mat-label>
+            <input matInput placeholder="1mo"formControlName="age" required />
+        </mat-form-field>
+    </form>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close>Cancel</button>
+    <button mat-button [mat-dialog-close]="petForm.value" cdkFocusInitial>Install</button>
+</mat-dialog-actions>

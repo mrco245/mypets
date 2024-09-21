@@ -3,6 +3,7 @@ import { RouterLink } from '@angular/router';
 import {MatToolbarModule} from '@angular/material/toolbar';
 import {MatIconModule} from '@angular/material/icon';
 import {MatButtonModule} from '@angular/material/button';
+import { AuthService } from '../../shared/services/auth.service';
 
 
 @Component({
@@ -14,4 +15,9 @@ import {MatButtonModule} from '@angular/material/button';
 })
 export class NaviagationComponent {
 
+  constructor(private authService: AuthService) {}
+  
+  signout() {
+    this.authService.SignOut();
+  }
 }

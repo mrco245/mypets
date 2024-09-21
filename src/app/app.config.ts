@@ -5,6 +5,9 @@ import { routes } from './app.routes';
 import { AuthService } from './shared/services/auth.service';
 import { FIREBASE_OPTIONS } from '@angular/fire/compat';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
+import { getAuth, provideAuth } from '@angular/fire/auth';
+import { getFirestore, provideFirestore } from '@angular/fire/firestore';
 
 export const appConfig: ApplicationConfig = {
   providers: [ AuthService, provideZoneChangeDetection({ eventCoalescing: true }), provideRouter(routes), 
