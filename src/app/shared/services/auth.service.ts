@@ -7,7 +7,6 @@ import {
 import { Router } from '@angular/router';
 import { User } from './user';
 import { GoogleAuthProvider } from 'firebase/auth';
-import { setDoc, doc } from '@angular/fire/firestore';
 
 @Injectable({
   providedIn: 'root',
@@ -17,9 +16,7 @@ export class AuthService {
   userData: User = {
     uid: '',
     email: '',
-    displayName: '',
-    photoURL: '',
-    emailVerified: false
+    emailVerified: false,
   };
   constructor(
     public afAuth: AngularFireAuth,
@@ -115,8 +112,6 @@ export class AuthService {
     const userData: User = {
       uid: user.uid,
       email: user.email,
-      displayName: user.displayName,
-      photoURL: user.photoURL,
       emailVerified: user.emailVerified,
     };
     return userRef.set(userData, {
@@ -126,7 +121,7 @@ export class AuthService {
   async SignOut() {
     return this.afAuth.signOut().then(async () => {
 
-      localStorage.removeItem('user');
+      //localStorage.removeItem('user');
       this.router.navigate(['sign-in']);
     });
   }

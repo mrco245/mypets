@@ -18,13 +18,20 @@ import {
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import {MatDatepickerModule} from '@angular/material/datepicker';
+import {MatSelectModule} from '@angular/material/select';
 import { AuthService } from '../../shared/services/auth.service';
+import { DatePipe } from '@angular/common';
 
 export interface Pet {
+  species: string;
   name: string;
-  position: number;
+  breed: string;
+  age: number;
   weight: number;
-  symbol: string;
+  altered: boolean;
+  birthdate: Date;
+  adoptiondate: Date;
 }
 
 const PET_DATA: Pet[] = [];
@@ -38,12 +45,13 @@ const PET_DATA: Pet[] = [];
     MatTableModule,
     MatButtonModule,
     MatDialogModule,
+    DatePipe
   ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css',
 })
-export class DashboardComponent  implements OnInit{
-  dataSource: Pet[] = [];
+export class DashboardComponent implements OnInit {
+  dataSource: Pet[] = [...PET_DATA];
 
   readonly dialog = inject(MatDialog);
 
@@ -61,39 +69,24 @@ export class DashboardComponent  implements OnInit{
   @ViewChild(MatTable) table: MatTable<Pet>;
 
   constructor(private authService: AuthService) {
-    this.dataSource = this.getPets();
-    console.log(this.dataSource);
   }
   ngOnInit(): void {
-    this.table.renderRows();
+    if(localStorage.getItem('pets_'+ this.authService.userData.uid)){
+      this.dataSource = JSON.parse(localStorage.getItem('pets_'+ `this.authService.userData.uid`)!);
+      this.table.renderRows();
+    }
+    
   }
+
   addPet() {
     const dialogRef = this.dialog.open(AddPetDialog);
     dialogRef.afterClosed().subscribe(async (result: Pet) => {
-      // Add a new document in collection "cities"
-      this.authService.afs
-        .collection('pets')
-        .doc(this.authService.userData.uid)
-        .collection('pets')
-        .add(result);
       this.dataSource.push(result);
+
+      localStorage.setItem('pets_' + `this.authService.userData.uid`, JSON.stringify(this.dataSource));
+      JSON.parse(localStorage.getItem('pets_' + `this.authService.userData.uid`)!);
       this.table.renderRows();
     });
-  }
-
-  getPets() {
-    const markers: any[] = [];
-    this.authService?.afs
-      .collection('pets')
-      .doc(this.authService.userData.uid)
-      .collection('pets')
-      .get()
-      .subscribe((querySnapshot: { docs: any[] }) => {
-        querySnapshot.docs.forEach((doc: { data: () => any }) => {
-          this.dataSource.push(doc.data());
-        });
-      });
-    return markers;
   }
 }
 
@@ -108,6 +101,8 @@ export class DashboardComponent  implements OnInit{
     MatButtonModule,
     MatCardModule,
     MatInputModule,
+    MatSelectModule,
+    MatDatepickerModule
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -123,6 +118,10 @@ export class AddPetDialog implements OnInit {
       species: new FormControl('', Validators.required),
       breed: new FormControl('', Validators.required),
       age: new FormControl('', Validators.required),
+      weight: new FormControl('', Validators.required),
+      birthdate: new FormControl('', Validators.required),
+      adoptiondate: new FormControl('', Validators.required),
+      altered: new FormControl('', Validators.required)
     });
   }
 }

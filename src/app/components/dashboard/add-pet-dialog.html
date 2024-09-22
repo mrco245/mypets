@@ -2,24 +2,53 @@
 <mat-dialog-content class="mat-typography">
     <form [formGroup]="petForm">
         <mat-form-field>
-            <mat-label>Pets Name</mat-label>
-            <input matInput placeholder="name" formControlName="name" />
+            <mat-label>Species</mat-label>
+            <mat-select formControlName="species" required>
+                <mat-option value="Dog">Dog</mat-option>
+                <mat-option value="Cat">Cat</mat-option>
+            </mat-select>
         </mat-form-field>
         <mat-form-field>
-            <mat-label>Species</mat-label>
-            <input matInput placeholder="dog"formControlName="species" required />
+            <mat-label>Pets Name</mat-label>
+            <input matInput type="text" placeholder="name" formControlName="name" />
         </mat-form-field>
         <mat-form-field>
             <mat-label>Breed</mat-label>
-            <input matInput placeholder="lab "formControlName="breed" required />
+            <input matInput type="text" placeholder="lab " formControlName="breed" required />
         </mat-form-field>
         <mat-form-field>
-            <mat-label>Age</mat-label>
-            <input matInput placeholder="1mo"formControlName="age" required />
+            <mat-label>Age (years)</mat-label>
+            <input matInput type="number" placeholder="1" formControlName="age" required />
+        </mat-form-field>
+        <mat-form-field>
+            <mat-label>Weight (lbs) </mat-label>
+            <input matInput type="number" placeholder="10" formControlName="weight" required />
+        </mat-form-field>
+        <mat-form-field>
+            <mat-label>Birthday</mat-label>
+            <input matInput [matDatepicker]="picker" formControlName="birthdate" required>
+            <mat-hint>MM/DD/YYYY</mat-hint>
+            <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+        <mat-form-field>
+            <mat-label>Adoption Day</mat-label>
+            <mat-hint>MM/DD/YYYY</mat-hint>
+            <mat-datepicker-toggle matIconSuffix [for]="picker1"></mat-datepicker-toggle>
+            <mat-datepicker #picker1></mat-datepicker>
+            <input matInput [matDatepicker]="picker1" placeholder="12/10/2020" formControlName="adoptiondate"
+                required />
+        </mat-form-field>
+        <mat-form-field>
+            <mat-label>Spayed/Neutered</mat-label>
+            <mat-select formControlName="altered" required>
+                <mat-option value="true">Yes</mat-option>
+                <mat-option value="false">No</mat-option>
+            </mat-select>
         </mat-form-field>
     </form>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
     <button mat-button mat-dialog-close>Cancel</button>
-    <button mat-button [mat-dialog-close]="petForm.value" cdkFocusInitial>Install</button>
+    <button type="submit" mat-button [disabled]="!petForm.valid" [mat-dialog-close]="petForm.value">Submit</button>
 </mat-dialog-actions>
