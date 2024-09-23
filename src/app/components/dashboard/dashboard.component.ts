@@ -72,7 +72,7 @@ export class DashboardComponent implements OnInit {
   }
   ngOnInit(): void {
     if(localStorage.getItem('pets_'+ this.authService.userData.uid)){
-      this.dataSource = JSON.parse(localStorage.getItem('pets_'+ `this.authService.userData.uid`)!);
+      this.dataSource = JSON.parse(localStorage.getItem('pets_'+ this.authService.userData.uid)!);
       this.table.renderRows();
     }
     
@@ -83,8 +83,8 @@ export class DashboardComponent implements OnInit {
     dialogRef.afterClosed().subscribe(async (result: Pet) => {
       this.dataSource.push(result);
 
-      localStorage.setItem('pets_' + `this.authService.userData.uid`, JSON.stringify(this.dataSource));
-      JSON.parse(localStorage.getItem('pets_' + `this.authService.userData.uid`)!);
+      localStorage.setItem('pets_' + this.authService.userData.uid, JSON.stringify(this.dataSource));
+      JSON.parse(localStorage.getItem('pets_' + this.authService.userData.uid)!);
       this.table.renderRows();
     });
   }
