@@ -52,7 +52,7 @@ router.post('/register', async (req, res) => {
         const hashedPassword = await bcrypt.hash(req.body.password, 10);
 
         // Create a new user
-        const newUser = new user({
+        const newUser = new userModel({
             username: req.body.username,
             email: req.body.email,
             password: hashedPassword
@@ -61,6 +61,7 @@ router.post('/register', async (req, res) => {
         await newUser.save();
         res.status(201).json({ message: 'User registered successfully' });
     } catch (error) {
+        console.log(error);
         res.status(500).json({ error: 'Internal server error' });
     }
 });
@@ -147,4 +148,57 @@ router.get('/user', verifyToken, async (req, res) => {
     }
 });
 
+
+/**
+ * @swagger
+ * /api/resetPassword:
+ *   delete:
+ *     summary: reset use's password.
+ *     security: [{
+ *          bearerAuth: []
+ *       }]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 description: user's email.
+ *                 example: JohnDoe@email.com
+ *               password:
+ *                 type: string
+ *                 description: The user's password.
+ *                 example: password
+ * 
+ *     responses:
+ *       '201':
+ *         description: A successful pet added
+ *       '400':
+ *         description: pet already exists
+ *       '500':
+ *         description: Internal Server Error
+ */
+// Route to reset password
+router.put('/resetPassword', verifyToken, async (req, res) => {
+    try {
+        // Check if the email already exists
+        const existingUser = await userModel.findOne({ email: req.user.email });
+        if (!existingUser) {
+            return res.status(400).json({ error: 'User not found' });
+        } else {
+            // Hash the password
+        const hashedPassword = await bcrypt.hash(req.body.password, 10);
+
+        existingUser.password = hashedPassword;
+        await existingUser.save();
+        res.status(201).json({ message: 'User password updated successfully' });
+        }
+    } catch (error) {
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+  
 export default router;

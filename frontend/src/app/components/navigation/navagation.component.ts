@@ -1,9 +1,10 @@
 import { Component } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import {MatToolbarModule} from '@angular/material/toolbar';
 import {MatIconModule} from '@angular/material/icon';
 import {MatButtonModule} from '@angular/material/button';
-import { AuthService } from '../../shared/services/auth.service';
+import { AuthService } from '../../services/auth.service';
+import { StorageService } from '../../services/storage.service';
 
 
 @Component({
@@ -15,9 +16,10 @@ import { AuthService } from '../../shared/services/auth.service';
 })
 export class NaviagationComponent {
 
-  constructor(private authService: AuthService) {}
+  constructor(private storeageService: StorageService, private router: Router) {}
   
   signout() {
-    this.authService.SignOut();
+    this.storeageService.clean();
+    this.router.navigate(['sign-in']);
   }
 }

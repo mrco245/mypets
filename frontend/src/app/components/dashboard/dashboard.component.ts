@@ -20,7 +20,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import {MatDatepickerModule} from '@angular/material/datepicker';
 import {MatSelectModule} from '@angular/material/select';
-import { AuthService } from '../../shared/services/auth.service';
+import { UserService } from '../../services/data.service';
 import { DatePipe } from '@angular/common';
 
 export interface Pet {
@@ -68,23 +68,20 @@ export class DashboardComponent implements OnInit {
 
   @ViewChild(MatTable) table: MatTable<Pet>;
 
-  constructor(private authService: AuthService) {
+  constructor(private authService: UserService) {
   }
   ngOnInit(): void {
-    if(localStorage.getItem('pets_'+ this.authService.userData.uid)){
-      this.dataSource = JSON.parse(localStorage.getItem('pets_'+ this.authService.userData.uid)!);
+      const pets = this.authService.getPets();
+      console.log(pets);
+      pets.forEach((value) => this.dataSource.push(value));
       this.table.renderRows();
     }
     
-  }
-
   addPet() {
     const dialogRef = this.dialog.open(AddPetDialog);
     dialogRef.afterClosed().subscribe(async (result: Pet) => {
       this.dataSource.push(result);
-
-      localStorage.setItem('pets_' + this.authService.userData.uid, JSON.stringify(this.dataSource));
-      JSON.parse(localStorage.getItem('pets_' + this.authService.userData.uid)!);
+      this.authService.addPet(result);
       this.table.renderRows();
     });
   }
