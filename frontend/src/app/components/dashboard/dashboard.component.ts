@@ -71,18 +71,44 @@ export class DashboardComponent implements OnInit {
   constructor(private authService: UserService) {
   }
   ngOnInit(): void {
-      const pets = this.authService.getPets();
-      console.log(pets);
-      pets.forEach((value) => this.dataSource.push(value));
-      this.table.renderRows();
+      this.authService.getPets().subscribe({
+        next: (data) => {
+          console.log(data);
+          for(const pet of data.pets){
+            const newPet: Pet = {
+              species: pet.species,
+              name: pet.name,
+              breed: pet.breed,
+              age: pet.age,
+              weight: pet.weight,
+              altered: pet.altered,
+              birthdate: pet.birthdate,
+              adoptiondate: pet.adoptiondate
+            }
+            this.dataSource.push(newPet);
+          }
+          this.table.renderRows();
+        },
+        error: (err) => {
+          console.log(err);
+        },
+      });
     }
     
   addPet() {
     const dialogRef = this.dialog.open(AddPetDialog);
     dialogRef.afterClosed().subscribe(async (result: Pet) => {
       this.dataSource.push(result);
-      this.authService.addPet(result);
-      this.table.renderRows();
+      this.authService.addPet(result).subscribe({
+        next: (data) => {
+          console.log(data);
+          this.table.renderRows();
+        },
+        error: (err) => {
+          console.log(err);
+        },
+      });
+     
     });
   }
 }

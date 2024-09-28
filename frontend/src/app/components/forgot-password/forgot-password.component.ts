@@ -6,11 +6,13 @@ import {
   FormControl,
   Validators,
 } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { StorageService } from '../../services/storage.service';
+import bcrypt from 'bcryptjs'
 
 @Component({
   selector: 'app-forgot-password',
@@ -28,26 +30,41 @@ import { MatInputModule } from '@angular/material/input';
 })
 export class ResetPasswordComponent implements OnInit {
   resetForm: FormGroup;
-  constructor(private authService: AuthService) {}
+  isPasswordReset = false;
+  isResetFailed = false;
+  errorMessage = '';
+
+  constructor(private authService: AuthService, private router: Router, private storageService: StorageService) {}
   ngOnInit(): void {
     this.resetForm = new FormGroup({
       email: new FormControl('', Validators.email),
       newPassword: new FormControl('', Validators.required),
     });
   }
-  sendResetLink() {
+  signout() {
+    this.storageService.clean();
+    this.router.navigate(['sign-in']);
+  }
+  async resetPassword() {
     if (this.resetForm.valid) {
+      const hashedPassword = await bcrypt.hash(this.resetForm.value.newPassword, 10);
+
       this.authService
         .resetPassword(
           this.resetForm.value.email,
-          this.resetForm.value.newPassword
+          hashedPassword
         )
         .subscribe({
           next: (data) => {
             console.log(data);
+            this.isPasswordReset = true;
+            this.isResetFailed = false;
           },
           error: (err) => {
             console.log(err);
+            this.isPasswordReset = false;
+            this.errorMessage = err.error.message;
+            this.isResetFailed = true;
           },
         });
     }

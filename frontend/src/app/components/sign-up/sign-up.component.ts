@@ -7,6 +7,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { StorageService } from '../../services/storage.service';
+import bcrypt from 'bcryptjs';
 
 @Component({
   selector: 'app-sign-up',
@@ -33,12 +34,15 @@ export class SignUpComponent implements OnInit {
       confirmPassword: new FormControl('', Validators.required),
     });
   }
-  signup() {
+  async signup() {
     if (this.signupForm.valid) {
+
+      const hashedPassword = await bcrypt.hash(this.signupForm.value.password, 10);
       this.authService.register(
         this.signupForm.value.username,
         this.signupForm.value.email,
-        this.signupForm.value.password
+        hashedPassword
+        
       ).subscribe({
         next: data => {
           console.log(data);
